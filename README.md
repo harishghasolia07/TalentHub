@@ -28,8 +28,9 @@ The foundation is designed to be scalable and can be extended with additional re
 
 - **Secure Authentication System**
   - User registration with validation
-  - Login with JWT token generation
-  - Protected routes and middleware
+  - Login with JWT token generation (1-hour expiration)
+  - Client-side token validation and automatic cleanup
+  - Protected routes with authentication-aware navigation
   - Password hashing with bcrypt
 
 - **Modern Frontend**
@@ -37,6 +38,7 @@ The foundation is designed to be scalable and can be extended with additional re
   - TypeScript for type safety
   - TailwindCSS for responsive design
   - shadcn/ui component library
+  - Custom SVG favicon with professional design
 
 - **Robust Backend**
   - RESTful API endpoints
@@ -45,10 +47,11 @@ The foundation is designed to be scalable and can be extended with additional re
   - Input validation and sanitization
 
 - **Security Best Practices**
-  - JWT tokens with 1-hour expiration
+  - JWT tokens with 1-hour expiration and client-side validation
+  - Automatic token cleanup for expired tokens
   - bcrypt password hashing (12 rounds)
   - Environment variable configuration
-  - Protected API routes
+  - Protected API routes with authentication middleware
 
 ## 🛠️ Technology Stack
 
@@ -112,9 +115,22 @@ NEXTAUTH_URL=http://localhost:3000
 6. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
-## 📚 API Documentation
+## 📚 Complete Documentation
 
-### Authentication Endpoints
+> **📋 For comprehensive documentation including deliverables, API endpoints, database schema, architecture details, and scaling suggestions, see:**
+> 
+> **➡️ [DOCUMENTATION.md](./DOCUMENTATION.md)**
+> 
+> This includes:
+> - 🗂️ Complete project structure and setup instructions
+> - 📚 Full API documentation with examples
+> - 🗄️ Database schema and operations
+> - 🏗️ Architectural choices and technical decisions
+> - 🔒 Security measures and authentication flow
+> - ⚠️ Error handling approach
+> - 🚀 Scaling suggestions and improvement roadmap
+
+### Quick API Reference
 
 #### POST /api/auth/register
 Register a new user account.
@@ -198,6 +214,32 @@ Authorization: Bearer <jwt_token>
 - `403` - Unauthorized (missing or invalid token)
 - `404` - User not found
 
+### Client-Side Authentication Utilities
+
+The application includes comprehensive client-side authentication utilities in `lib/clientAuth.ts`:
+
+#### `isAuthenticated(): boolean`
+Checks if the user has a valid, non-expired JWT token in localStorage.
+- Returns `true` if token exists and is not expired
+- Automatically removes expired tokens from localStorage
+- Returns `false` if no token or token is expired
+
+#### `isTokenExpired(token: string): boolean`
+Validates if a JWT token has expired by decoding the payload.
+- Decodes JWT payload and checks `exp` field
+- Returns `true` if token is expired or invalid
+- Handles malformed tokens gracefully
+
+#### `logout(): void`
+Centralized logout function that cleans up all authentication data.
+- Removes `auth_token` from localStorage
+- Removes `user_data` from localStorage
+
+#### `getTokenExpirationTime(token: string): number | null`
+Returns the remaining time until token expires in minutes.
+- Useful for showing token expiration warnings
+- Returns `null` if token is invalid or has no expiration
+
 ## 🗂️ Project Structure
 
 ```
@@ -216,8 +258,10 @@ recruitment-platform/
 │   ├── ui/               # shadcn/ui components
 │   └── AuthForm.tsx      # Authentication form component
 ├── lib/                  # Utility libraries
-│   ├── auth.ts           # JWT utilities
+│   ├── auth.ts           # Server-side JWT utilities
+│   ├── clientAuth.ts     # Client-side authentication utilities
 │   ├── mongodb.ts        # Database connection
+│   ├── schemas.ts        # Zod validation schemas
 │   ├── utils.ts          # General utilities
 │   └── validation.ts     # Input validation
 ├── models/               # Mongoose models
@@ -231,7 +275,9 @@ recruitment-platform/
 ## 🔒 Security Features
 
 - **Password Security**: bcrypt hashing with 12 salt rounds, minimum 6 characters
-- **JWT Authentication**: 1-hour token expiration, environment-based secret keys
+- **JWT Authentication**: 1-hour token expiration with automatic client-side validation
+- **Token Management**: Client-side token expiration checking and automatic cleanup
+- **Smart Navigation**: Authentication-aware components prevent access to login/register for authenticated users
 - **Input Validation**: Zod for runtime type-safe validation with comprehensive error handling
 - **Protected Routes**: Middleware-based route protection with token verification
 
@@ -337,6 +383,21 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 📞 Support
 
 For questions or support, please open an issue in the GitHub repository or contact the development team.
+
+## 📅 Recent Updates
+
+### Latest Improvements (September 2025)
+
+- **JWT Token Validation**: Implemented comprehensive client-side token validation with automatic expiration checking
+- **Smart Authentication**: Added authentication-aware navigation components that prevent unnecessary redirects
+- **Favicon Fix**: Created professional SVG favicon with briefcase design matching the platform theme
+- **Token Cleanup**: Automatic removal of expired tokens from localStorage for enhanced security
+- **Build Optimization**: Resolved module caching issues and optimized development workflow
+
+### Security Enhancements
+- Client-side token expiration validation prevents API calls with expired tokens
+- Automatic logout when tokens expire for seamless user experience
+- Centralized authentication utilities for consistent behavior across components
 
 ---
 
