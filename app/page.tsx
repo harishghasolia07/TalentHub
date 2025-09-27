@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, BriefcaseIcon, Target, TrendingUp, Award, Clock } from 'lucide-react';
+import AuthAwareLink from '@/components/AuthAwareLink';
 
 export default function Home() {
   return (
@@ -20,11 +21,11 @@ export default function Home() {
             </p>
 
             <div className="space-x-4">
-              <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700">
-                <Link href="/register">Join TalentHub</Link>
+              <Button size="lg" className="bg-blue-600 hover:bg-blue-700" asChild>
+                <AuthAwareLink href="/register">Join TalentHub</AuthAwareLink>
               </Button>
               <Button variant="outline" size="lg" asChild>
-                <Link href="/login">Sign In</Link>
+                <AuthAwareLink href="/login">Sign In</AuthAwareLink>
               </Button>
             </div>
 
@@ -175,10 +176,10 @@ export default function Home() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white" asChild>
-              <Link href="/register">Get Started Free</Link>
+              <AuthAwareLink href="/register">Get Started Free</AuthAwareLink>
             </Button>
             <Button size="lg" variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white" asChild>
-              <Link href="/login">Sign In</Link>
+              <AuthAwareLink href="/login">Sign In</AuthAwareLink>
             </Button>
           </div>
 

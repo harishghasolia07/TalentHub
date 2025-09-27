@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AuthForm from '@/components/AuthForm';
 import Link from 'next/link';
@@ -8,6 +8,18 @@ import { toast } from 'sonner';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Check if user is already logged in
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+      // Redirect to profile page if already logged in
+      router.replace('/profile');
+    } else {
+      setIsLoading(false);
+    }
+  }, [router]);
 
   const handleRegistrationSuccess = (data: any) => {
     // Show success toast and redirect to login
@@ -23,6 +35,18 @@ export default function RegisterPage() {
       router.push('/login');
     }, 1000);
   };
+
+  // Show loading state while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
