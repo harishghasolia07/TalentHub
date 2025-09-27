@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { isAuthenticated, logout } from '@/lib/clientAuth';
 
 interface UserProfile {
   id: string;
@@ -35,12 +36,13 @@ export default function ProfilePage() {
 
   const fetchUserProfile = useCallback(async () => {
     try {
-      const token = localStorage.getItem('auth_token');
-
-      if (!token) {
+      // Check if user is authenticated with a valid token
+      if (!isAuthenticated()) {
         router.push('/login');
         return;
       }
+
+      const token = localStorage.getItem('auth_token');
 
       const response = await fetch('/api/user/profile', {
         method: 'GET',
@@ -76,8 +78,7 @@ export default function ProfilePage() {
   }, [fetchUserProfile]);
 
   const handleLogout = () => {
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('user_data');
+    logout();
 
     toast.success('Logged out successfully!', {
       duration: 3000,

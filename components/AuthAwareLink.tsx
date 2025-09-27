@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { isAuthenticated } from '@/lib/clientAuth';
 
 interface AuthAwareLinkProps {
     href: string;
@@ -14,11 +15,11 @@ export default function AuthAwareLink({ href, children, className }: AuthAwareLi
     const handleClick = (e: React.MouseEvent) => {
         e.preventDefault();
 
-        // Check if user is already logged in
-        const token = localStorage.getItem('auth_token');
+        // Check if user is authenticated with a valid token
+        const authenticated = isAuthenticated();
 
-        if (token && (href === '/login' || href === '/register')) {
-            // If logged in and trying to access login/register, redirect to profile
+        if (authenticated && (href === '/login' || href === '/register')) {
+            // If authenticated and trying to access login/register, redirect to profile
             router.push('/profile');
         } else {
             // Otherwise, navigate normally

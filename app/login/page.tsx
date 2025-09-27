@@ -5,16 +5,16 @@ import { useRouter } from 'next/navigation';
 import AuthForm from '@/components/AuthForm';
 import Link from 'next/link';
 import { toast } from 'sonner';
+import { isAuthenticated } from '@/lib/clientAuth';
 
 export default function LoginPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is already logged in
-    const token = localStorage.getItem('auth_token');
-    if (token) {
-      // Redirect to profile page if already logged in
+    // Check if user is authenticated with a valid token
+    if (isAuthenticated()) {
+      // Redirect to profile page if already authenticated
       router.replace('/profile');
     } else {
       setIsLoading(false);
